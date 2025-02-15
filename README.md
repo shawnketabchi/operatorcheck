@@ -1,5 +1,4 @@
-# Operatorcheck
-## Swedish Phone Number Lookup
+# [Swedish Phone Number Lookup](https://shawnketabchi.github.io/operatorcheck/index.html)
 A web application to lookup Swedish phone number operators.
 
 ## Features
