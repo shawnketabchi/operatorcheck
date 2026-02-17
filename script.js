@@ -106,9 +106,22 @@ async function processNumbers(numbers, resultsDiv) {
     updateResults(resultsDiv);
 }
 
+function buildOperatorCounts() {
+    const counts = {};
+    for (const entry of allResults) {
+        const name = entry.name || "Unknown Operator";
+        counts[name] = (counts[name] || 0) + 1;
+    }
+    return Object.entries(counts).sort((a, b) => b[1] - a[1]);
+}
+
 function updateResults(resultsDiv) {
     const resultMap = Object.fromEntries(allResults.map(entry => [entry.number, entry.name]));
-    
+    const operatorCounts = buildOperatorCounts();
+    const breakdownHtml = operatorCounts
+        .map(([name, count]) => `<span class="operator-tag"><span class="operator-count">${count}</span> ${escapeHtml(name)}</span>`)
+        .join('');
+
     resultsDiv.innerHTML = `
         <div class="results-header">
             <div class="results-info">
@@ -117,13 +130,14 @@ function updateResults(resultsDiv) {
             </div>
             <div class="results-actions">
                 <span class="material-symbols-outlined" onclick="copyResults()" title="Copy">content_copy</span>
-                <span class="material-symbols-outlined" onclick="downloadResults()" title="Download">download</span>
+                <span class="material-symbols-outlined" onclick="downloadResultsCsv()" title="Download CSV">download</span>
             </div>
         </div>
-        <ul>${originalNumbers.map(num => 
+        <div class="operator-breakdown">${breakdownHtml}</div>
+        <ul>${originalNumbers.map(num =>
             `<li>${num} - ${resultMap[formatNumber(num)] || "Unknown Operator"}</li>`
         ).join('')}</ul>`;
-    
+
     resultsDiv.classList.remove("hidden");
 }
 
@@ -150,20 +164,22 @@ function copyResults() {
     });
 }
 
-function downloadResults() {
+
+function downloadResultsCsv() {
     if (allResults.length === 0) return;
 
-    const text = originalNumbers.map(num => {
+    const rows = ["Number,Operator"];
+    originalNumbers.forEach(num => {
         const formatted = formatNumber(num);
         const operator = allResults.find(entry => entry.number === formatted)?.name || "Unknown Operator";
-        return `${num} - ${operator}`;
-    }).join("\n");
+        rows.push(`${num},${operator}`);
+    });
 
-    const blob = new Blob([text], { type: "text/plain" });
+    const blob = new Blob([rows.join("\n")], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "phone_lookup_results.txt";
+    a.download = "operatorcheck.csv";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

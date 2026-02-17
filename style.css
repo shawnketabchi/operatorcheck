@@ -287,6 +287,26 @@ textarea:focus,
     border-radius: 12px;
 }
 
+.operator-breakdown {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 10px 0 6px;
+}
+
+.operator-tag {
+    font-size: 13px;
+    padding: 3px 10px;
+    background: var(--surface-alt);
+    color: var(--text);
+    border-radius: 12px;
+    white-space: nowrap;
+}
+
+.operator-count {
+    font-weight: 600;
+}
+
 .results ul {
     list-style: none;
     padding: 0;
