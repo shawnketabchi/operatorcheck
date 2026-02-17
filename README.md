@@ -2,8 +2,10 @@
 A web application to lookup Swedish phone number operators.
 
 ## Features
-- Lookup multiple phone numbers at once
-- Support for both international (+46) and national format
+- Lookup multiple phone numbers at once (comma- or newline-separated)
+- Support for both international (+46) and national (0XX) format
+- Per-operator breakdown showing how many numbers belong to each operator
 - Copy results to clipboard
-- Download results as text file
-- Keyboard shortcuts (Ctrl+Enter to lookup)
+- Download results as CSV
+- Dark/light mode
+- Keyboard shortcut: Ctrl+Enter / ⌘+Enter to lookup
