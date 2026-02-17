@@ -1,15 +1,43 @@
+/* ── Light theme (default fallback) ── */
 :root {
-    --primary: #2563eb;
-    --primary-hover: #1d4ed8;
-    --error: #dc3545;
-    --error-bg: #f8d7da;
-    --error-border: #f5c6cb;
-    --text-muted: #6b7280;
+    --bg:              #f8fafc;
+    --surface:         #ffffff;
+    --surface-alt:     #f1f5f9;
+    --border:          #e2e8f0;
+    --text:            #1e293b;
+    --text-muted:      #6b7280;
+    --primary:         #2563eb;
+    --primary-hover:   #1d4ed8;
+    --primary-ring:    rgba(37, 99, 235, 0.15);
+    --error:           #dc3545;
+    --error-bg:        #fef2f2;
+    --error-border:    #fca5a5;
+    --shadow:          rgba(0, 0, 0, 0.08);
+    --shadow-lg:       rgba(0, 0, 0, 0.12);
+}
+
+/* ── Dark theme ── */
+[data-theme="dark"] {
+    --bg:              #111111;
+    --surface:         #1c1c1c;
+    --surface-alt:     #282828;
+    --border:          #333333;
+    --text:            #eeeeee;
+    --text-muted:      #888888;
+    --primary:         #3b82f6;
+    --primary-hover:   #2563eb;
+    --primary-ring:    rgba(59, 130, 246, 0.2);
+    --error:           #f87171;
+    --error-bg:        #1a0a0a;
+    --error-border:    #7f1d1d;
+    --shadow:          rgba(0, 0, 0, 0.4);
+    --shadow-lg:       rgba(0, 0, 0, 0.6);
 }
 
 body {
     font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
-    background-color: #f4f4f4;
+    background-color: var(--bg);
+    color: var(--text);
     text-align: center;
     margin: 0;
     padding: 0;
@@ -17,19 +45,53 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+/* ── Theme toggle button ── */
+#theme-toggle {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 100;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px var(--shadow);
+    color: var(--text);
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#theme-toggle:hover {
+    background-color: var(--surface-alt);
+    box-shadow: 0 4px 12px var(--shadow-lg);
+}
+
+#theme-toggle .material-symbols-outlined {
+    font-size: 1.25rem;
+    opacity: 1;
+}
+
+/* ── Container ── */
 .container {
     max-width: 800px;
     width: 90%;
     margin: 2rem auto;
-    background: white;
+    background: var(--surface);
     padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px var(--shadow);
     min-height: 500px;
     display: flex;
     flex-direction: column;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .content-area {
@@ -39,26 +101,35 @@ body {
     position: relative;
 }
 
+/* ── Textarea ── */
 textarea {
     width: 100%;
     min-height: 180px;
     padding: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
     font-size: 16px;
     resize: vertical;
     box-sizing: border-box;
     line-height: 1.4;
-    margin-bottom: 0.25rem; 
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 0.25rem;
+    background-color: var(--surface);
+    color: var(--text);
+    box-shadow: 0 1px 3px var(--shadow);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+textarea::placeholder {
+    color: var(--text-muted);
 }
 
 textarea:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-ring);
+    outline: none;
 }
 
+/* ── Lookup button ── */
 .button-container {
     display: flex;
     justify-content: center;
@@ -80,7 +151,7 @@ button {
     position: relative;
     overflow: hidden;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 2px 4px var(--shadow);
 }
 
 button.loading {
@@ -117,29 +188,35 @@ button.loading::after {
     100% { transform: translateX(100%); }
 }
 
-button:hover {
+button:hover:not(:disabled):not(.loading) {
     background-color: var(--primary-hover);
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(37, 99, 235, 0.15);
+    box-shadow: 0 4px 8px var(--shadow-lg);
 }
 
 button:active {
     transform: translateY(0);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 2px var(--shadow);
 }
 
 button:disabled {
-    background-color: #b3d7ff;
+    opacity: 0.55;
     cursor: not-allowed;
 }
 
 button:focus,
 textarea:focus,
 .material-symbols-outlined:focus {
-    outline: 2px solid #007BFF;
+    outline: 2px solid var(--primary);
     outline-offset: 2px;
 }
 
+#theme-toggle:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* ── Results ── */
 .hidden {
     display: none;
 }
@@ -148,15 +225,16 @@ textarea:focus,
     text-align: left;
     margin-top: auto;
     padding: 20px;
-    background: #f8f9fa;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: 8px;
     font-size: 16px;
     height: auto;
     opacity: 0;
     visibility: hidden;
     transform: translateY(10px);
-    transition: all 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease,
+                background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .results:not(.hidden) {
@@ -188,6 +266,11 @@ textarea:focus,
 
 .results-actions .material-symbols-outlined {
     margin-left: 15px;
+    color: var(--text-muted);
+}
+
+.results-actions .material-symbols-outlined:hover {
+    color: var(--text);
 }
 
 .results-info {
@@ -197,10 +280,10 @@ textarea:focus,
 }
 
 .results-count {
-    color: #666;
+    color: var(--text-muted);
     font-size: 14px;
     padding: 2px 8px;
-    background: #e9ecef;
+    background: var(--border);
     border-radius: 12px;
 }
 
@@ -212,8 +295,9 @@ textarea:focus,
 
 .results li {
     padding: 12px 10px;
-    border-bottom: 1px solid #ddd;
-    transition: background-color 0.2s ease;
+    border-bottom: 1px solid var(--border);
+    transition: background-color 0.15s ease;
+    border-radius: 4px;
 }
 
 .results li:last-child {
@@ -221,9 +305,10 @@ textarea:focus,
 }
 
 .results li:hover {
-    background-color: #f0f0f0;
+    background-color: var(--surface);
 }
 
+/* ── Icons ── */
 .material-symbols-outlined {
     font-variation-settings:
         'FILL' 0,
@@ -232,7 +317,7 @@ textarea:focus,
         'opsz' 48;
     display: inline-block;
     vertical-align: middle;
-    transition: all 0.3s ease;
+    transition: opacity 0.2s ease, color 0.2s ease;
     opacity: 0.8;
     cursor: pointer;
 }
@@ -241,11 +326,12 @@ textarea:focus,
     opacity: 1;
 }
 
+/* ── Error message ── */
 .error-message {
     color: var(--error);
     background-color: var(--error-bg);
     border: 1px solid var(--error-border);
-    border-radius: 4px;
+    border-radius: 6px;
     padding: 12px 16px;
     margin: 10px 0;
     animation: fadeIn 0.3s ease-in;
@@ -262,12 +348,14 @@ textarea:focus,
     to { opacity: 1; transform: translateY(0); }
 }
 
+/* ── Heading & flag ── */
 h2 {
     margin-bottom: 0.1rem;
     font-size: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: var(--text);
 }
 
 .h2-text {
@@ -279,18 +367,20 @@ h2 {
     letter-spacing: -0.5px;
 }
 
-.flag {
-    font-size: 1.5em;
-    margin-right: 12px;
-    display: inline-block;
+.flag-svg {
+    width: 1.6em;
+    height: auto;
     vertical-align: middle;
-    line-height: 1;
-    transform: translateY(-2px);
+    margin-right: 12px;
+    border-radius: 2px;
+    flex-shrink: 0;
 }
 
+/* ── Body text ── */
 p {
     margin-bottom: 1rem;
     font-size: 18px;
+    color: var(--text);
 }
 
 .keyboard-hint {
@@ -302,6 +392,20 @@ p {
 
 .loading-text {
     font-size: 14px;
-    color: #666;
+    color: rgba(255, 255, 255, 0.85);
     margin-left: 8px;
+}
+
+/* ── Results h3 ── */
+.results h3 {
+    margin: 0;
+    color: var(--text);
+}
+
+/* ── Dark mode: no blue gradient on title ── */
+[data-theme="dark"] .h2-text {
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+    color: var(--text);
 }

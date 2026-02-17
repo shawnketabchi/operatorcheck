@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,8 +10,19 @@
 </head>
 <body>
 
+    <button id="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
+        <span class="material-symbols-outlined" id="theme-icon">light_mode</span>
+    </button>
+
     <div class="container">
-        <h2><span class="flag">🇸🇪</span><span class="h2-text">Phone Number Lookup</span></h2>
+        <h2>
+            <svg class="flag-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 13" aria-label="Swedish flag" role="img">
+                <rect width="20" height="13" fill="#006AA7"/>
+                <rect x="0" y="5" width="20" height="3" fill="#FECC02"/>
+                <rect x="6" y="0" width="3" height="13" fill="#FECC02"/>
+            </svg>
+            <span class="h2-text">Phone Number Lookup</span>
+        </h2>
         <p>Enter phone numbers, comma- or newline-separated:</p>
 
         <div class="content-area">

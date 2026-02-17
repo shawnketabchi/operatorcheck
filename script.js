@@ -234,4 +234,22 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // Theme toggle
+    const html = document.documentElement;
+    const themeIcon = document.getElementById('theme-icon');
+
+    function applyTheme(theme) {
+        html.setAttribute('data-theme', theme);
+        themeIcon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
+        localStorage.setItem('theme', theme);
+    }
+
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    applyTheme(savedTheme);
+
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+        const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+    });
 });
