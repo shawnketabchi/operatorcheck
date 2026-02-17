@@ -1,5 +1,6 @@
 let allResults = [];
 let originalNumbers = [];
+let activeFilter = null;
 
 function formatNumber(num) {
     num = num.replace(/\s+/g, "");
@@ -79,7 +80,7 @@ async function lookupNumbers() {
     originalNumbers = unique;
 
     try {
-        await processNumbers(unique, resultsDiv);
+        await processNumbers(unique, resultsDiv, button);
     } catch (error) {
         showError(resultsDiv, error.message);
     } finally {
@@ -87,14 +88,19 @@ async function lookupNumbers() {
     }
 }
 
-async function processNumbers(numbers, resultsDiv) {
+async function processNumbers(numbers, resultsDiv, button) {
     const formattedNumbers = numbers.map(formatNumber);
     allResults = [];
+    activeFilter = null;
 
+    const totalChunks = Math.ceil(formattedNumbers.length / 2000);
     for (let i = 0; i < formattedNumbers.length; i += 2000) {
+        if (totalChunks > 1) {
+            const batchNum = i / 2000 + 1;
+            button.querySelector('.loading-text').textContent = `Batch ${batchNum} / ${totalChunks}…`;
+        }
         const chunk = formattedNumbers.slice(i, i + 2000);
-        const data = await fetchOperators(chunk);
-        allResults.push(...data);
+        allResults.push(...await fetchOperators(chunk));
     }
 
     if (!allResults.length) {
@@ -116,10 +122,9 @@ function buildOperatorCounts() {
 }
 
 function updateResults(resultsDiv) {
-    const resultMap = Object.fromEntries(allResults.map(entry => [entry.number, entry.name]));
     const operatorCounts = buildOperatorCounts();
     const breakdownHtml = operatorCounts
-        .map(([name, count]) => `<span class="operator-tag"><span class="operator-count">${count}</span> ${escapeHtml(name)}</span>`)
+        .map(([name, count]) => `<span class="operator-tag" data-operator="${escapeHtml(name)}"><span class="operator-count">${count}</span> ${escapeHtml(name)}</span>`)
         .join('');
 
     resultsDiv.innerHTML = `
@@ -134,11 +139,46 @@ function updateResults(resultsDiv) {
             </div>
         </div>
         <div class="operator-breakdown">${breakdownHtml}</div>
-        <ul>${originalNumbers.map(num =>
-            `<li>${num} - ${resultMap[formatNumber(num)] || "Unknown Operator"}</li>`
-        ).join('')}</ul>`;
+        <ul></ul>`;
 
+    resultsDiv.querySelectorAll('.operator-tag').forEach(tag => {
+        tag.addEventListener('click', () => filterByOperator(tag.dataset.operator));
+    });
+
+    renderList(resultsDiv);
     resultsDiv.classList.remove("hidden");
+}
+
+function filterByOperator(name) {
+    activeFilter = activeFilter === name ? null : name;
+    renderList(document.getElementById('results'));
+}
+
+function renderList(resultsDiv) {
+    const resultMap = Object.fromEntries(allResults.map(e => [e.number, e.name]));
+    const visible = activeFilter
+        ? originalNumbers.filter(num => (resultMap[formatNumber(num)] || "Unknown Operator") === activeFilter)
+        : originalNumbers;
+
+    resultsDiv.querySelector('ul').innerHTML = visible
+        .map(num => `<li>${num} - ${resultMap[formatNumber(num)] || "Unknown Operator"}</li>`)
+        .join('');
+
+    let hint = resultsDiv.querySelector('.filter-hint');
+    if (activeFilter) {
+        if (!hint) {
+            hint = document.createElement('p');
+            hint.className = 'filter-hint';
+            resultsDiv.querySelector('ul').after(hint);
+        }
+        hint.textContent = `Showing ${visible.length} of ${originalNumbers.length} numbers`;
+    } else if (hint) {
+        hint.remove();
+    }
+
+    resultsDiv.querySelectorAll('.operator-tag').forEach(tag => {
+        tag.classList.toggle('active', tag.dataset.operator === activeFilter);
+    });
 }
 
 function copyResults() {
