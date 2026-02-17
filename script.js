@@ -41,8 +41,16 @@ function validateNumber(num) {
     return { valid: true };
 }
 
+function escapeHtml(str) {
+    return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+}
+
 async function lookupNumbers() {
-    const button = document.querySelector('button');
+    const button = document.getElementById("lookup-btn");
     const input = document.getElementById("phoneNumbers").value.trim();
     const resultsDiv = document.getElementById("results");
 
@@ -51,31 +59,27 @@ async function lookupNumbers() {
         return;
     }
 
-    if (!input.includes(',') && input.length > 15) {
-        showError(resultsDiv, "Numbers must be comma-separated");
-        return;
-    }
-
-    const numbers = input.split(",").map(num => num.trim()).filter(Boolean);
-    const validationResults = numbers.map(num => ({
+    const rawNumbers = input.split(/[\n,]+/).map(num => num.trim()).filter(Boolean);
+    const unique = [...new Set(rawNumbers)];
+    const validationResults = unique.map(num => ({
         number: num,
         ...validateNumber(num)
     }));
 
     const invalidNumbers = validationResults.filter(result => !result.valid);
-    
+
     if (invalidNumbers.length > 0) {
         showError(resultsDiv, `Invalid number format:<br>${invalidNumbers
-            .map(result => `"${result.number}": ${result.error}`)
+            .map(result => `"${escapeHtml(result.number)}": ${escapeHtml(result.error)}`)
             .join('<br>')}`);
         return;
     }
 
     setLoading(true, button);
-    originalNumbers = numbers;
+    originalNumbers = unique;
 
     try {
-        await processNumbers(numbers, resultsDiv);
+        await processNumbers(unique, resultsDiv);
     } catch (error) {
         showError(resultsDiv, error.message);
     } finally {
@@ -211,11 +215,23 @@ window.addEventListener('unhandledrejection', event => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    const textarea = document.getElementById('phoneNumbers');
-    textarea.addEventListener('keydown', (e) => {
+    const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.userAgent);
+    document.getElementById('keyboard-hint').textContent =
+        `Press ${isMac ? '⌘' : 'Ctrl'}+Enter to lookup numbers`;
+
+    document.getElementById('phoneNumbers').addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
             e.preventDefault();
             lookupNumbers();
         }
+    });
+
+    document.querySelectorAll('.results-actions .material-symbols-outlined').forEach(el => {
+        el.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                el.click();
+            }
+        });
     });
 });

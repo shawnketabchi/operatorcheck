@@ -62,7 +62,7 @@ textarea:focus {
 .button-container {
     display: flex;
     justify-content: center;
-    margin:rem 0;
+    margin: 0.5rem 0;
 }
 
 button {
@@ -241,46 +241,6 @@ textarea:focus,
     opacity: 1;
 }
 
-.material-symbols-outlined:focus {
-    outline: 2px solid #007BFF;
-    outline-offset: 2px;
-}
-
-.loading-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(255, 255, 255, 0.95);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease;
-}
-
-.loading-overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-.loading-spinner {
-    width: 24px;
-    height: 24px;
-    border: 2px solid #007BFF;
-    border-top-color: transparent;
-    border-radius: 50%;
-    animation: spinner 0.8s linear infinite;
-}
-
-@keyframes spinner {
-    to { transform: rotate(360deg); }
-}
-
-.loading {
-    animation: none;
-}
-
 .error-message {
     color: var(--error);
     background-color: var(--error-bg);
@@ -317,13 +277,15 @@ h2 {
     color: transparent;
     font-weight: 700;
     letter-spacing: -0.5px;
-    text-shadow: 0 2px 4px rgba(37, 99, 235, 0.1);
 }
 
 .flag {
-    font-size: 32px;
+    font-size: 1.5em;
     margin-right: 12px;
+    display: inline-block;
+    vertical-align: middle;
     line-height: 1;
+    transform: translateY(-2px);
 }
 
 p {
@@ -342,13 +304,4 @@ p {
     font-size: 14px;
     color: #666;
     margin-left: 8px;
-}
-
-.flag {
-    font-size: 1.5em;
-    margin-right: 15px;
-    display: inline-block;
-    vertical-align: middle;
-    line-height: 1;
-    transform: translateY(-2px); 
 }

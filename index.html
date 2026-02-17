@@ -5,25 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phone Number Lookup</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
 </head>
 <body>
 
     <div class="container">
         <h2><span class="flag">🇸🇪</span><span class="h2-text">Phone Number Lookup</span></h2>
-        <p>Enter comma-separated phone numbers:</p>
-        
+        <p>Enter phone numbers, comma- or newline-separated:</p>
+
         <div class="content-area">
-            <textarea id="phoneNumbers" 
-                      placeholder="+46701234567, 0701234567"
-                      aria-label="Enter comma-separated phone numbers"></textarea>
-            <br>
+            <textarea id="phoneNumbers"
+                      placeholder="+46701234567&#10;0701234567"
+                      aria-label="Enter phone numbers, comma- or newline-separated"></textarea>
             <div class="button-container">
-                <button onclick="lookupNumbers()">
+                <button id="lookup-btn" onclick="lookupNumbers()">
                     <span class="button-text">Lookup</span>
                 </button>
             </div>
-            <p class="keyboard-hint">Press Ctrl+Enter to lookup numbers</p>
+            <p class="keyboard-hint" id="keyboard-hint"></p>
 
             <div class="results hidden" id="results">
                 <div class="results-header">
@@ -32,8 +32,8 @@
                         <span class="results-count"></span>
                     </div>
                     <div class="results-actions">
-                        <span class="material-symbols-outlined" onclick="copyResults()" title="Copy" style="font-size: 24px;">content_copy</span>
-                        <span class="material-symbols-outlined" onclick="downloadResults()" title="Download" style="font-size: 24px;">download</span>
+                        <span class="material-symbols-outlined" role="button" tabindex="0" onclick="copyResults()" title="Copy">content_copy</span>
+                        <span class="material-symbols-outlined" role="button" tabindex="0" onclick="downloadResults()" title="Download">download</span>
                     </div>
                 </div>
                 <ul></ul>
