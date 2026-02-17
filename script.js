@@ -265,6 +265,17 @@ async function fetchOperators(numbers) {
     }
 }
 
+function handleImportedFile(file) {
+    const reader = new FileReader();
+    reader.onload = e => {
+        document.getElementById('phoneNumbers').value = e.target.result.trim();
+    };
+    reader.onerror = () => {
+        showError(document.getElementById('results'), 'Failed to read file.');
+    };
+    reader.readAsText(file);
+}
+
 window.addEventListener('unhandledrejection', event => {
     console.error('Unhandled promise rejection:', event.reason);
     showError(document.getElementById('results'), 'An unexpected error occurred. Please try again.');
@@ -274,6 +285,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.userAgent);
     document.getElementById('keyboard-hint').textContent =
         `Press ${isMac ? '⌘' : 'Ctrl'}+Enter to lookup numbers`;
+
+    document.getElementById('file-input').addEventListener('change', e => {
+        if (e.target.files[0]) handleImportedFile(e.target.files[0]);
+        e.target.value = '';
+    });
+
+    const textarea = document.getElementById('phoneNumbers');
+    textarea.addEventListener('dragover', e => {
+        e.preventDefault();
+        textarea.classList.add('drag-over');
+    });
+    textarea.addEventListener('dragleave', () => textarea.classList.remove('drag-over'));
+    textarea.addEventListener('drop', e => {
+        e.preventDefault();
+        textarea.classList.remove('drag-over');
+        const file = e.dataTransfer.files[0];
+        if (file) handleImportedFile(file);
+    });
 
     document.getElementById('phoneNumbers').addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
